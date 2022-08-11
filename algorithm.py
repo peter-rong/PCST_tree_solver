@@ -4,68 +4,78 @@ from collections import deque
 
 class Algorithm:
 
-	def __init__(self, graph, reward_list:list, cost_list:list):
-		self.tree = tree.Tree(graph, reward_list, cost_list)
+	def __init__(self, current_tree: tree.Tree):
+		self.tree = current_tree
 
 	def execute(self):
 
-		stack = deque() #the order of tracing back
-		leaves = self.tree.get_leaves()
+			for node in self.tree.nodes:
+				node.score = node.reward
+				node.visitOnce = False
+				node.visitTwice = False
 
-		#first level of leaves
-		for leaf in leaves:
-			stack.append(leaf)
-			leaf.visitOnce = True
-			leaf.score = leaf.reward
+			stack = deque() #the order of tracing back
+			leaves = self.tree.get_leaves()
 
-		leaves = self.tree.get_leaves()
-		temp_leaf_count = 0
-
-		#forward
-		while len(leaves) != 0:
-			temp_leaf_count = len(leaves)
+			#first level of leaves
 			for leaf in leaves:
 				stack.append(leaf)
 				leaf.visitOnce = True
-				leaf.set_score()
 
 			leaves = self.tree.get_leaves()
+			temp_leaf_count = 0
 
-		# trace back
+			#forward
+			while len(leaves) != 0:
 
-		if temp_leaf_count > 2:
-			print('Error in algorithm, more than 2 ending point')
+				temp_leaf_count = len(leaves)
+				for leaf in leaves:
+					stack.append(leaf)
+					leaf.set_score()
 
-		if temp_leaf_count == 1:
-			temp = stack.pop()
-			temp.visitedTwice = True
+				for leaf in leaves:
+					leaf.visitOnce = True
 
-		if temp_leaf_count == 2:
-			temp1 = stack.pop()
-			temp2 = stack.pop()
+				leaves = self.tree.get_leaves()
 
-			boost_to_temp1 = max(0,temp2.score+temp1.get_edge_cost(temp2))
-			boost_to_temp2 = max(0,temp1.score+temp2.get_edge_cost(temp1))
+			for node in self.tree.nodes:
+				print(str(node.point) + ' ' + str(node.score))
 
-			temp1.score += boost_to_temp1
-			temp2.score += boost_to_temp2
-			temp1.visitedTwice = True
-			temp2.visitedTwice = True
+			# trace back
 
-		while len(stack) > 0:
-			temp = stack.pop()
-			temp.visitedTwice = True
-			temp.update_score()
+			if temp_leaf_count > 2:
+				print('Error in algorithm, more than 2 ending point')
 
-		root = self.get_solution_node
+			if temp_leaf_count == 1:
+				temp = stack.pop()
+				temp.visitTwice = True
 
-		self.get_solution_tree(root)
+			if temp_leaf_count == 2:
+				temp1 = stack.pop()
+				temp2 = stack.pop()
+				boost_to_temp1 = max(0,temp2.score+temp1.get_edge_cost(temp2))
+				boost_to_temp2 = max(0,temp1.score+temp2.get_edge_cost(temp1))
+
+				temp1.score += boost_to_temp1
+				temp2.score += boost_to_temp2
+				temp1.visitTwice = True
+				temp2.visitTwice = True
+
+			while len(stack) > 0:
+				temp = stack.pop()
+				temp.visitTwice = True
+				temp.update_score()
+
+			root = self.get_solution_node()
+			return root.score
+			#self.get_solution_tree(root)
 
 	def get_solution_node(self):
 
 		max_node = self.tree.nodes[0]
 
 		for node in self.tree.nodes:
+			print(str(node.point) + ' ' + str(node.score))
 			if node.score > max_node.score:
 				max_node = node
 
@@ -73,4 +83,6 @@ class Algorithm:
 
 	def get_solution_tree(self,root):
 
-		return
+		queue = deque()
+
+		return None

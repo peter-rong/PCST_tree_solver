@@ -2,14 +2,13 @@ import sys
 
 class TreeNode:
 
-    def __init__(self, point, r: float, isSol: bool):
+    def __init__(self, point, r: float):
 
         self.point = point
         self.reward = r
         self.visitOnce = False
         self.visitTwice = False
-        self.isSolution = isSol #core node
-        self.score = 0 #temporary score
+        self.score = r #temporary score
         self.edges = list()
 
     def add_edge(self, edge):
@@ -29,32 +28,28 @@ class TreeNode:
 
     def get_edge_cost(self,otherNode):
         for e in self.edges:
-            if e.get_other_node == otherNode:
+            if self.get_other_node(e) == otherNode:
                 return e.cost
 
-        return None
+        print('Edge not fount, error')
 
     def set_score(self):
-        score = self.reward
 
         for e in self.edges:
 
             temp_node = self.get_other_node(e)
-            if not temp_node.visitOnce:
-                continue
-            score += max(0, temp_node.score+e.cost)
-
-        self.score = score
+            if temp_node.visitOnce:
+                self.score += max(0, temp_node.score+e.cost)
 
     def update_score(self):
 
         for e in self.edges:
 
             temp_node = self.get_other_node(e)
-            if not temp_node.visitTwice:
-                continue
 
-            self.score += max(0, temp_node.score+e.cost)
+            if temp_node.visitTwice:
+                temp_score = self.score - max(0, self.score + e.cost) + max(0, temp_node.score + e.cost)
+                self.score = max(temp_score, self.score)
 
 
 class TreeEdge:
@@ -64,24 +59,25 @@ class TreeEdge:
         self.other = other
         self.cost = c
 
+    '''
     def get_other_node(self, node: TreeNode):
-        if node == self.one: return self.other
+        if node == self.one:
+            return self.other
         return self.one
-
+    '''
 
 class Tree:
 
-    def __init__(self, graph, reward_list:list, cost_list:list):
+    def __init__(self, points, edgeIndex, reward_list:list, cost_list:list):
 
         self.nodes = list()
-        self.root = None
 
-        for i in range(len(graph.points)):
-            self.nodes.append(TreeNode(graph.points[i],reward_list[i], reward_list[i]==sys.maxsize))
+        for i in range(len(points)):
+            self.nodes.append(TreeNode(points[i],reward_list[i], reward_list[i] == sys.maxsize))
 
-        for i in range(len(graph.edgeIndex)):
-            firstIndex = graph.edgeIndex[i][0]
-            secondIndex = graph.edgeIndex[i][1]
+        for i in range(len(edgeIndex)):
+            firstIndex = edgeIndex[i][0]
+            secondIndex = edgeIndex[i][1]
             edge = TreeEdge(cost_list[i],self.nodes[firstIndex], self.nodes[secondIndex])
             self.nodes[firstIndex].add_edge(edge)
             self.nodes[secondIndex].add_edge(edge)
@@ -91,10 +87,18 @@ class Tree:
         for node in self.nodes:
 
             if node.visitOnce:
-                pass
+                continue
 
             if node.get_unvisited_neigbor_count() < 2:
                 leaves_list.append(node)
 
         return leaves_list
+
+    def add_node(self, node: TreeNode):
+        self.nodes.append(node)
+
+    def add_edge(self, edge: TreeEdge):
+        edge.one.add_edge(edge)
+        edge.other.add_edge(edge)
+
 

@@ -13,6 +13,7 @@ class Algorithm:
 				node.score = node.reward
 				node.visitOnce = False
 				node.visitTwice = False
+				node.solutionChecked = False
 
 			stack = deque() #the order of tracing back
 			leaves = self.tree.get_leaves()
@@ -37,10 +38,10 @@ class Algorithm:
 					leaf.visitOnce = True
 
 				leaves = self.tree.get_leaves()
-
+			'''
 			for node in self.tree.nodes:
 				print(str(node.point) + ' ' + str(node.score))
-
+			'''
 			# trace back
 
 			if temp_leaf_count > 2:
@@ -67,15 +68,15 @@ class Algorithm:
 				temp.update_score()
 
 			root = self.get_solution_node()
-			return root.score
-			#self.get_solution_tree(root)
+			return self.get_solution_tree(root)
+
 
 	def get_solution_node(self):
 
 		max_node = self.tree.nodes[0]
 
 		for node in self.tree.nodes:
-			print(str(node.point) + ' ' + str(node.score))
+			#print(str(node.point) + ' ' + str(node.score))
 			if node.score > max_node.score:
 				max_node = node
 
@@ -84,5 +85,24 @@ class Algorithm:
 	def get_solution_tree(self,root):
 
 		queue = deque()
+		solution_tree = tree.Tree(list(),list(),list(),list())
+		queue.append(root)
+		solution_tree.add_node(root)
+		root.solutionChecked = True
 
-		return None
+		while len(queue) > 0:
+
+			curr = queue.popleft()
+
+			for e in curr.edges:
+				neighbor = curr.get_other_node(e)
+				if not neighbor.solutionChecked:
+					if neighbor.score == root.score:
+						queue.append(neighbor)
+						solution_tree.add_node(neighbor)
+						solution_tree.add_edge(e)
+
+					neighbor.solutionChecked = True
+		print('here')
+
+		return solution_tree

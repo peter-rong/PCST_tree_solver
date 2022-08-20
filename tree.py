@@ -8,6 +8,7 @@ class TreeNode:
         self.reward = r
         self.visitOnce = False
         self.visitTwice = False
+        self.solutionChecked = False
         self.score = r #temporary score
         self.edges = list()
 
@@ -71,6 +72,7 @@ class Tree:
     def __init__(self, points, edgeIndex, reward_list:list, cost_list:list):
 
         self.nodes = list()
+        self.edges = list()
 
         for i in range(len(points)):
             self.nodes.append(TreeNode(points[i],reward_list[i], reward_list[i] == sys.maxsize))
@@ -81,6 +83,7 @@ class Tree:
             edge = TreeEdge(cost_list[i],self.nodes[firstIndex], self.nodes[secondIndex])
             self.nodes[firstIndex].add_edge(edge)
             self.nodes[secondIndex].add_edge(edge)
+            self.edges.append(edge)
 
     def get_leaves(self):
         leaves_list = list()
@@ -100,5 +103,6 @@ class Tree:
     def add_edge(self, edge: TreeEdge):
         edge.one.add_edge(edge)
         edge.other.add_edge(edge)
+        self.edges.append(edge)
 
 

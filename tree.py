@@ -10,6 +10,7 @@ class TreeNode:
         self.visitTwice = False
         self.solutionChecked = False
         self.score = r #temporary score
+        self.inSol = False
         self.edges = list()
 
     def add_edge(self, edge):
@@ -74,6 +75,8 @@ class Tree:
         self.nodes = list()
         self.edges = list()
 
+
+        #index doesn't change
         for i in range(len(points)):
             self.nodes.append(TreeNode(points[i],reward_list[i], reward_list[i] == sys.maxsize))
 

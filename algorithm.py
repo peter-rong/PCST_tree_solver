@@ -101,7 +101,7 @@ class Algorithm:
 					if neighbor.score == root.score:
 						queue.append(neighbor)
 					neighbor.solutionChecked = True
-
+		#print('here')
 		'''
 
 		queue = deque()

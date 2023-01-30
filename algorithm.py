@@ -96,7 +96,8 @@ class Algorithm:
 
 		while len(queue) > 0:
 			curr = queue.popleft()
-			total_score += curr.score
+			total_score += curr.reward
+
 			sol_list.append(curr.point)
 			curr.inSol = True
 

@@ -1,6 +1,6 @@
 from random import uniform, randint
 from tree import TreeNode, TreeEdge, Tree
-
+from algorithm import Algorithm
 
 def rand_between_bounds(bound, sig_fig) -> float:
     lower = bound[0]
@@ -30,10 +30,14 @@ def rand_tree(node_num, cost_bounds, reward_bounds, sig_fig) -> Tree:
         node_count += 1
         node_num -= 1
         new_edge = TreeEdge(rand_between_bounds(cost_bounds, sig_fig), old_node, new_node)
+        old_node.edges.append(new_edge)
+        new_node.edges.append(new_edge)
 
         tree.edges.append(new_edge)
 
     print(tree)
     return tree
 
-rand_tree(4, [-3, -1], [0.5, 4], 1)
+test_tree = rand_tree(4, [-3, -1], [0.5, 4], 1)
+
+Algorithm(test_tree).execute()

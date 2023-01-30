@@ -70,7 +70,7 @@ class Algorithm:
 			root = self.get_solution_node()
 
 			self.get_solution_tree(root)
-
+			print("here")
 			return self.tree
 
 
@@ -91,17 +91,25 @@ class Algorithm:
 		queue.append(root)
 		root.solutionChecked = True
 
+		total_score = 0
+		sol_list = []
+
 		while len(queue) > 0:
 			curr = queue.popleft()
+			total_score += curr.score
+			sol_list.append(curr.point)
 			curr.inSol = True
 
 			for e in curr.edges:
 				neighbor = curr.get_other_node(e)
 				if not neighbor.solutionChecked:
 					if neighbor.score == root.score:
+						total_score += e.cost
 						queue.append(neighbor)
 					neighbor.solutionChecked = True
-		#print('here')
+
+		print(sol_list)
+		print("Total score is "+ str(total_score))
 		'''
 
 		queue = deque()

@@ -76,9 +76,9 @@ class TreeNode:
                 #for dynamic tree
                 #TODO
 
-                for temp_e in temp_node.edges:
+                #for temp_e in temp_node.edges:
 
-                e.set_score(temp_node,edge_score)
+                #e.set_score(temp_node,edge_score)
 class TreeEdge:
 
     def __init__(self, c: float, one: TreeNode, other: TreeNode):
@@ -155,3 +155,10 @@ class Tree:
                        + " and node " + str(edge.other.point) + " has cost " + str(edge.cost) + "\n")
 
         return string
+
+
+
+#TODO check whether angle is computed from edge/vertex
+
+#TODO reduce run through from 2 to 1 (one direction is not affected)
+

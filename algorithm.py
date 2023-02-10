@@ -59,6 +59,7 @@ class Algorithm:
 
 				temp1.score += boost_to_temp1
 				temp2.score += boost_to_temp2
+
 				temp1.visitTwice = True
 				temp2.visitTwice = True
 
@@ -70,7 +71,7 @@ class Algorithm:
 			root = self.get_solution_node()
 
 			self.get_solution_tree(root)
-			print("here")
+
 			return self.tree
 
 
@@ -111,6 +112,13 @@ class Algorithm:
 
 		print(sol_list)
 		print("Total score is "+ str(total_score))
+
+		for e in self.tree.edges:
+			print("Edge score between "+ str(e.one.point)+ " and "
+				  + str(e.other.point)+" is "+ str(e.one_to_other_score))
+			print("Edge score between "+ str(e.other.point)+ " and "
+				  + str(e.one.point)+" is "+ str(e.other_to_one_score))
+
 		'''
 
 		queue = deque()

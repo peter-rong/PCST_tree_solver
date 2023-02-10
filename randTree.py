@@ -38,6 +38,6 @@ def rand_tree(node_num, cost_bounds, reward_bounds, sig_fig) -> Tree:
     print(tree)
     return tree
 
-test_tree = rand_tree(10, [-3, -1], [0.5, 4], 1)
+test_tree = rand_tree(3, [-3, -1], [0.5, 4], 0)
 
 Algorithm(test_tree).execute()

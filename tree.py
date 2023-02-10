@@ -29,6 +29,13 @@ class TreeNode:
                 count += 1
         return count
 
+    def get_edge(self, otherNode):
+        for e in self.edges:
+            if self.get_other_node(e) == otherNode:
+                return e
+
+        print('Edge not fount, error')
+        return None
     def get_edge_cost(self, otherNode):
         for e in self.edges:
             if self.get_other_node(e) == otherNode:
@@ -38,12 +45,23 @@ class TreeNode:
 
     def set_score(self):
 
+        next_edge = None
+
         for e in self.edges:
 
             temp_node = self.get_other_node(e)
             if temp_node.visitOnce:
+                #for dynamic tree
+                e.set_score(temp_node,temp_node.score)
                 self.score += max(0, temp_node.score + e.cost)
+            else:
+                next_edge = e
 
+        #for dynamic tree
+        '''
+        if next_edge:
+            next_edge.set_score(self, self.score)
+        '''
     def update_score(self):
 
         for e in self.edges:
@@ -51,16 +69,30 @@ class TreeNode:
             temp_node = self.get_other_node(e)
 
             if temp_node.visitTwice:
+                #detach the part of the tree on the other side of e
                 temp_score = self.score - max(0, self.score + e.cost) + max(0, temp_node.score + e.cost)
+
                 self.score = max(temp_score, self.score)
+                #for dynamic tree
+                #TODO
 
+                for temp_e in temp_node.edges:
 
+                e.set_score(temp_node,edge_score)
 class TreeEdge:
 
     def __init__(self, c: float, one: TreeNode, other: TreeNode):
         self.one = one
         self.other = other
         self.cost = c
+        self.one_to_other_score = 0
+        self.other_to_one_score = 0
+
+    def set_score(self, first_node, score):
+        if first_node == self.one:
+            self.one_to_other_score = score
+        else:
+            self.other_to_one_score = score
 
     '''
     def get_other_node(self, node: TreeNode):
